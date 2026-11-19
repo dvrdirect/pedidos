@@ -2,25 +2,30 @@ const express = require('express');
 const Order = require('../models/Order');
 const Setting = require('../models/Setting');
 const { centsToMoney } = require('../utils/split');
+const { monthFilter } = require('../utils/month');
 
 const router = express.Router();
 
 // GET /api/summary — totales generales y por dueño de la moto.
 // Se suman los repartos guardados en cada pedido, así un cambio de
 // porcentajes no altera lo ya registrado.
+// ?month=YYYY-MM filtra por mes (hora de Ciudad de México).
 router.get('/', async (req, res) => {
-  const rows = await Order.aggregate([
-    {
-      $group: {
-        _id: '$owner',
-        count: { $sum: 1 },
-        totalCents: { $sum: '$amountCents' },
-        ownerCents: { $sum: '$ownerCents' },
-        gasCents: { $sum: '$gasCents' },
-        danielCents: { $sum: '$danielCents' },
-      },
+  const match = monthFilter(req.query.month);
+  const pipeline = [];
+  if (match.createdAt) pipeline.push({ $match: match });
+  pipeline.push({
+    $group: {
+      _id: '$owner',
+      count: { $sum: 1 },
+      totalCents: { $sum: '$amountCents' },
+      ownerCents: { $sum: '$ownerCents' },
+      gasCents: { $sum: '$gasCents' },
+      danielCents: { $sum: '$danielCents' },
     },
-  ]);
+  });
+
+  const rows = await Order.aggregate(pipeline);
 
   const totals = {
     count: 0,

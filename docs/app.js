@@ -16,6 +16,22 @@
   }
   var percents = { ownerPct: 20, gasPct: 10, danielPct: 70 };
   var currentSection = 'pedidos';
+  var GOAL_TARGET = 50000; // Meta para el bebé, en MXN.
+  var LAST_SEEN_KEY = 'pedidos_last_daniel_total';
+  var selectedMonth = currentMonth();
+  var availableMonths = [];
+
+  function currentMonth() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  function monthLabel(ym) {
+    var parts = String(ym).split('-');
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+    var label = d.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
 
   // ---------- Utilidades ----------
   function $(id) {
@@ -115,6 +131,7 @@
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     showView('app');
     showSection('pedidos');
+    loadMonths();
     loadData();
   }
 
@@ -133,12 +150,18 @@
     $('orders-loading').hidden = false;
     $('orders-empty').hidden = true;
     $('orders-error').hidden = true;
-    return Promise.all([api('/api/summary'), api('/api/orders'), api('/api/settings')])
+    return Promise.all([
+      api('/api/summary?month=' + selectedMonth),
+      api('/api/orders?month=' + selectedMonth),
+      api('/api/settings'),
+      api('/api/summary'),
+    ])
       .then(function (results) {
         percents = results[2];
         renderSummary(results[0]);
         renderOrders(results[1].orders || []);
         renderSettingsForm();
+        renderGoal(results[3]);
       })
       .catch(function (err) {
         if (err.message === 'No autorizado') return;
@@ -261,6 +284,80 @@
     $('settings-daniel').textContent = (100 - owner - gas) + '%';
   }
 
+  // ---------- Meta para el bebé ----------
+  function animateNumber(el, from, to, duration) {
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / duration);
+      el.textContent = money(from + (to - from) * p);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function renderGoal(s) {
+    var saved = s.danielTotal || 0;
+    var pct = Math.min(100, (saved / GOAL_TARGET) * 100);
+    $('goal-bar').style.width = pct + '%';
+    $('goal-pct').textContent = pct.toFixed(1) + '%';
+    $('goal-remaining').textContent = money(Math.max(0, GOAL_TARGET - saved));
+    var lastSeen = null;
+    try {
+      var raw = localStorage.getItem(LAST_SEEN_KEY);
+      if (raw !== null) lastSeen = Number(raw);
+    } catch (e) {
+      lastSeen = null;
+    }
+    var delta = lastSeen === null || !Number.isFinite(lastSeen)
+      ? 0
+      : Math.round((saved - lastSeen) * 100) / 100;
+    var amountEl = $('goal-amount');
+    if (delta > 0) {
+      $('goal-delta').textContent = '+ ' + money(delta) + ' desde tu última visita';
+      $('goal-delta').hidden = false;
+      $('piggy-wrap').classList.add('piggy-happy');
+      animateNumber(amountEl, lastSeen, saved, 1200);
+      setTimeout(function () {
+        $('piggy-wrap').classList.remove('piggy-happy');
+      }, 1400);
+    } else {
+      $('goal-delta').hidden = true;
+      amountEl.textContent = money(saved);
+    }
+    try {
+      localStorage.setItem(LAST_SEEN_KEY, String(saved));
+    } catch (e) {}
+  }
+
+  function loadMonths() {
+    return api('/api/orders/months')
+      .then(function (data) {
+        var months = data.months || [];
+        if (months.indexOf(currentMonth()) === -1) months.unshift(currentMonth());
+        availableMonths = months.slice().sort().reverse();
+        var select = $('month-select');
+        select.innerHTML = '';
+        availableMonths.forEach(function (ym) {
+          var opt = document.createElement('option');
+          opt.value = ym;
+          opt.textContent = monthLabel(ym);
+          select.appendChild(opt);
+        });
+        select.value = selectedMonth;
+      })
+      .catch(function () {
+        // Si falla, deja solo el mes actual.
+        var select = $('month-select');
+        select.innerHTML = '';
+        var opt = document.createElement('option');
+        opt.value = currentMonth();
+        opt.textContent = monthLabel(currentMonth());
+        select.appendChild(opt);
+        select.value = selectedMonth;
+      });
+  }
+
   // ---------- Eventos ----------
   // Entrar escribiendo el nombre (sin contraseña).
   $('login-form').addEventListener('submit', function (e) {
@@ -290,6 +387,12 @@
     btn.addEventListener('click', function () {
       showSection(btn.dataset.view);
     });
+  });
+
+  // Selector de mes.
+  $('month-select').addEventListener('change', function () {
+    selectedMonth = this.value;
+    loadData();
   });
 
   $('logout-btn').addEventListener('click', function () {
@@ -330,6 +433,8 @@
       .then(function () {
         $('add-form').reset();
         $('add-preview').hidden = true;
+        selectedMonth = currentMonth();
+        $('month-select').value = selectedMonth;
         showSection('pedidos');
         loadData();
       })
@@ -366,6 +471,7 @@
   } else if (token && user) {
     showView('app');
     showSection('pedidos');
+    loadMonths();
     loadData();
   } else {
     showView('login');

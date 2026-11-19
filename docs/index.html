@@ -42,6 +42,50 @@
 
       <!-- Pedidos: resumen + lista -->
       <div id="view-pedidos" class="app-view">
+        <!-- Meta para el bebé -->
+        <div class="card goal-card">
+          <div class="goal-head">
+            <div id="piggy-wrap" class="piggy-wrap">
+              <svg class="piggy" viewBox="0 0 220 170" role="img" aria-label="Cochinito de ahorros">
+                <g class="coins">
+                  <g class="coin coin-1"><circle cx="95" cy="18" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/><text x="95" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">$</text></g>
+                  <g class="coin coin-2"><circle cx="110" cy="10" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/><text x="110" y="14" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">$</text></g>
+                  <g class="coin coin-3"><circle cx="125" cy="18" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="2"/><text x="125" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">$</text></g>
+                </g>
+                <g class="piggy-body">
+                  <ellipse cx="110" cy="95" rx="72" ry="50" fill="#f9a8d4" stroke="#f472b6" stroke-width="2"/>
+                  <rect x="58" y="132" width="15" height="20" rx="7" fill="#f472b6"/>
+                  <rect x="82" y="136" width="15" height="18" rx="7" fill="#f472b6"/>
+                  <rect x="138" y="136" width="15" height="18" rx="7" fill="#f472b6"/>
+                  <rect x="160" y="132" width="15" height="20" rx="7" fill="#f472b6"/>
+                  <path d="M70,58 L78,28 L98,52 Z" fill="#f9a8d4" stroke="#f472b6" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M180,92 q16,-4 11,11 q-4,11 -14,6" fill="none" stroke="#f472b6" stroke-width="3" stroke-linecap="round"/>
+                  <rect x="92" y="40" width="34" height="7" rx="3.5" fill="#be185d"/>
+                  <circle cx="140" cy="80" r="5" fill="#1c1a17"/>
+                  <circle cx="142" cy="78" r="1.5" fill="#fff"/>
+                  <ellipse cx="178" cy="100" rx="13" ry="10" fill="#f472b6"/>
+                  <ellipse cx="174" cy="100" rx="2" ry="3.5" fill="#be185d"/>
+                  <ellipse cx="182" cy="100" rx="2" ry="3.5" fill="#be185d"/>
+                  <path d="M148,108 q9,7 18,0" fill="none" stroke="#be185d" stroke-width="2.5" stroke-linecap="round"/>
+                </g>
+              </svg>
+              <p id="goal-delta" class="goal-delta" hidden></p>
+            </div>
+            <div class="goal-text">
+              <h2>Meta para el bebé</h2>
+              <p class="goal-amount"><span id="goal-amount">$0.00</span> <span class="muted">de $50,000</span></p>
+              <div class="goal-bar"><div id="goal-bar" class="goal-bar-fill" style="width:0%"></div></div>
+              <p class="muted goal-sub"><span id="goal-pct">0%</span> · Faltan <span id="goal-remaining">$50,000</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selector de mes -->
+        <div class="month-row">
+          <label for="month-select">Mes</label>
+          <select id="month-select"></select>
+        </div>
+
         <!-- Resumen -->
         <div id="summary" class="summary">
           <div class="card mine">

@@ -2,6 +2,7 @@ const express = require('express');
 const Order = require('../models/Order');
 const Setting = require('../models/Setting');
 const { splitOrder, centsToMoney } = require('../utils/split');
+const { monthFilter, monthKey } = require('../utils/month');
 
 const router = express.Router();
 const OWNERS = ['rosario', 'luis'];
@@ -36,9 +37,18 @@ function validateOrderInput(body) {
   return { errors, amount };
 }
 
+// GET /api/orders/months — meses con pedidos, del más reciente al más antiguo.
+router.get('/months', async (req, res) => {
+  const orders = await Order.find({}, 'createdAt').lean();
+  const months = new Set();
+  for (const o of orders) months.add(monthKey(o.createdAt));
+  return res.json({ months: [...months].sort().reverse() });
+});
+
 // GET /api/orders — lista de pedidos, del más reciente al más antiguo.
+// ?month=YYYY-MM filtra por mes (hora de Ciudad de México).
 router.get('/', async (req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 });
+  const orders = await Order.find(monthFilter(req.query.month)).sort({ createdAt: -1 });
   return res.json({ orders: orders.map(serialize) });
 });
 

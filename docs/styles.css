@@ -154,6 +154,35 @@ input:focus, select:focus {
 .app-view { display: flex; flex-direction: column; gap: 16px; }
 .app-view[hidden] { display: none; }
 
+/* Meta para el bebé */
+.goal-head { display: flex; gap: 12px; align-items: center; }
+.piggy-wrap { flex: 0 0 118px; text-align: center; }
+.piggy { width: 118px; height: auto; display: block; }
+.goal-text { flex: 1; min-width: 0; }
+.goal-text h2 { margin: 0 0 4px; }
+.goal-amount { font-size: 1.35rem; font-weight: 800; margin: 0 0 8px; }
+.goal-bar { height: 12px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.goal-bar-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 1s ease; }
+.goal-sub { margin: 8px 0 0; }
+.goal-delta { display: inline-block; margin: 6px 0 0; padding: 4px 10px; background: #dcfce7; color: #15803d; font-weight: 700; font-size: 0.9rem; border-radius: 999px; animation: delta-pop 0.4s ease; }
+.goal-delta[hidden] { display: none; }
+@keyframes delta-pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.piggy-body { transform-origin: 110px 145px; animation: piggy-bob 3.5s ease-in-out infinite; }
+@keyframes piggy-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-3px) rotate(-1deg); } }
+.piggy-happy .piggy-body { animation: piggy-wiggle 0.9s ease-in-out; }
+@keyframes piggy-wiggle { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-4deg) translateY(-4px); } 40% { transform: rotate(3deg); } 60% { transform: rotate(-2deg) translateY(-2px); } 80% { transform: rotate(1deg); } }
+.coin { opacity: 0; }
+.piggy-happy .coin { animation: coin-drop 0.7s ease-in forwards; }
+.piggy-happy .coin-2 { animation-delay: 0.2s; }
+.piggy-happy .coin-3 { animation-delay: 0.4s; }
+@keyframes coin-drop { 0% { opacity: 0; transform: translateY(-14px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(26px); } }
+
+/* Selector de mes */
+.month-row { display: flex; align-items: center; gap: 10px; }
+.month-row label { margin: 0; }
+.month-row select { flex: 1; }
+
 .summary { display: flex; flex-direction: column; gap: 16px; }
 
 .mine {
