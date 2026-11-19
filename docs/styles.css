@@ -123,10 +123,6 @@ input:focus, select:focus {
 .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 7px 12px; font-size: 0.9rem; }
 .btn-danger:hover { background: #fef2f2; }
 
-.user-picker { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
-.user-picker .btn-block { margin-top: 0; }
-.user-picker .btn .muted { color: rgba(255,255,255,0.85); }
-
 .menu-bar {
   display: flex;
   gap: 8px;

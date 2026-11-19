@@ -21,13 +21,14 @@
     <!-- ============ INICIO DE SESIÓN ============ -->
     <section id="view-login" class="card">
       <h2>¿Quién eres?</h2>
-      <p class="muted">Toca tu nombre para entrar a ver tus pedidos y ganancias.</p>
-      <div id="user-picker" class="user-picker">
-        <button type="button" class="btn btn-primary btn-block user-pick" data-username="rosario">Rosario <span class="muted">· Dueña de moto</span></button>
-        <button type="button" class="btn btn-primary btn-block user-pick" data-username="luis">Luis <span class="muted">· Dueño de moto</span></button>
-        <button type="button" class="btn btn-primary btn-block user-pick" data-username="daniel">Daniel <span class="muted">· Repartidor</span></button>
-      </div>
-      <p id="login-error" class="error" hidden></p>
+      <p class="muted">Escribe tu nombre para entrar a ver tus pedidos y ganancias.</p>
+      <form id="login-form">
+        <label for="login-name">Tu nombre</label>
+        <input id="login-name" name="name" type="text" autocomplete="username" placeholder="Ej. Daniel" required />
+
+        <p id="login-error" class="error" hidden></p>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
     </section>
 
     <!-- ============ PANEL PRINCIPAL ============ -->

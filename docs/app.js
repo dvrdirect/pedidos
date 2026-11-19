@@ -256,25 +256,27 @@
   }
 
   // ---------- Eventos ----------
-  // Entrar tocando el nombre (sin contraseña).
-  document.querySelectorAll('.user-pick').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      showError($('login-error'), null);
-      btn.disabled = true;
-      api('/api/auth/login', {
-        method: 'POST',
-        body: { username: btn.dataset.username },
+  // Entrar escribiendo el nombre (sin contraseña).
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    showError($('login-error'), null);
+    var btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Entrando…';
+    api('/api/auth/login', {
+      method: 'POST',
+      body: { username: $('login-name').value.trim() },
+    })
+      .then(function (data) {
+        login(data.user, data.token);
       })
-        .then(function (data) {
-          login(data.user, data.token);
-        })
-        .catch(function (err) {
-          if (err.message !== 'No autorizado') showError($('login-error'), err.message);
-        })
-        .finally(function () {
-          btn.disabled = false;
-        });
-    });
+      .catch(function (err) {
+        if (err.message !== 'No autorizado') showError($('login-error'), err.message);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      });
   });
 
   // Menú: Pedidos / Agregar pedido / Reparto.
