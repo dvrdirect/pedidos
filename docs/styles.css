@@ -156,7 +156,7 @@ input:focus, select:focus {
 
 /* Meta para el bebé */
 .goal-head { display: flex; gap: 12px; align-items: center; }
-.piggy-wrap { flex: 0 0 118px; text-align: center; }
+.piggy-wrap { flex: 0 0 118px; text-align: center; position: relative; }
 .piggy { width: 118px; height: auto; display: block; }
 .goal-text { flex: 1; min-width: 0; }
 .goal-text h2 { margin: 0 0 4px; }
@@ -168,11 +168,12 @@ input:focus, select:focus {
 .goal-delta[hidden] { display: none; }
 @keyframes delta-pop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-.piggy-body { transform-origin: 110px 145px; animation: piggy-bob 3.5s ease-in-out infinite; }
+.piggy { transform-origin: 50% 100%; animation: piggy-bob 3.5s ease-in-out infinite; }
 @keyframes piggy-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-3px) rotate(-1deg); } }
-.piggy-happy .piggy-body { animation: piggy-wiggle 0.9s ease-in-out; }
+.piggy-happy .piggy { animation: piggy-wiggle 0.9s ease-in-out; }
 @keyframes piggy-wiggle { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-4deg) translateY(-4px); } 40% { transform: rotate(3deg); } 60% { transform: rotate(-2deg) translateY(-2px); } 80% { transform: rotate(1deg); } }
-.coin { opacity: 0; }
+.piggy-coins { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+.coin { width: 20px; height: 20px; border-radius: 50%; background: #fbbf24; border: 2px solid #d97706; color: #92400e; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; opacity: 0; }
 .piggy-happy .coin { animation: coin-drop 0.7s ease-in forwards; }
 .piggy-happy .coin-2 { animation-delay: 0.2s; }
 .piggy-happy .coin-3 { animation-delay: 0.4s; }
