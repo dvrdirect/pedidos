@@ -15,6 +15,7 @@
     user = null;
   }
   var percents = { ownerPct: 20, gasPct: 10, danielPct: 70 };
+  var currentSection = 'pedidos';
 
   // ---------- Utilidades ----------
   function $(id) {
@@ -89,7 +90,6 @@
   // ---------- Vistas ----------
   function showView(name) {
     $('view-login').hidden = name !== 'login';
-    $('view-force-password').hidden = name !== 'force-password';
     $('view-app').hidden = name !== 'app';
     $('logout-btn').hidden = name !== 'app';
     $('user-label').hidden = name !== 'app';
@@ -98,17 +98,24 @@
     }
   }
 
+  function showSection(name) {
+    currentSection = name;
+    $('view-pedidos').hidden = name !== 'pedidos';
+    $('view-add').hidden = name !== 'add';
+    $('view-settings').hidden = name !== 'settings';
+    document.querySelectorAll('.menu-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.view === name);
+    });
+  }
+
   function login(userData, newToken) {
     token = newToken;
     user = userData;
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
-    if (user.mustChangePassword) {
-      showView('force-password');
-    } else {
-      showView('app');
-      loadData();
-    }
+    showView('app');
+    showSection('pedidos');
+    loadData();
   }
 
   function logout(message) {
@@ -232,13 +239,14 @@
 
   // ---------- Ajustes del reparto (admin) ----------
   function renderSettingsForm() {
-    var card = $('settings-card');
-    card.hidden = !(user && user.isAdmin);
-    if (!card.hidden) {
+    var isAdmin = !!(user && user.isAdmin);
+    $('menu-settings-btn').hidden = !isAdmin;
+    if (isAdmin) {
       $('settings-owner').value = percents.ownerPct;
       $('settings-gas').value = percents.gasPct;
       updateDanielPctLabel();
     }
+    if (!isAdmin && currentSection === 'settings') showSection('pedidos');
   }
 
   function updateDanielPctLabel() {
@@ -248,55 +256,32 @@
   }
 
   // ---------- Eventos ----------
-  $('toggle-password').addEventListener('click', function () {
-    var input = $('login-password');
-    var show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    this.textContent = show ? 'Ocultar' : 'Mostrar';
+  // Entrar tocando el nombre (sin contraseña).
+  document.querySelectorAll('.user-pick').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      showError($('login-error'), null);
+      btn.disabled = true;
+      api('/api/auth/login', {
+        method: 'POST',
+        body: { username: btn.dataset.username },
+      })
+        .then(function (data) {
+          login(data.user, data.token);
+        })
+        .catch(function (err) {
+          if (err.message !== 'No autorizado') showError($('login-error'), err.message);
+        })
+        .finally(function () {
+          btn.disabled = false;
+        });
+    });
   });
 
-  $('login-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    showError($('login-error'), null);
-    var btn = this.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = 'Entrando…';
-    api('/api/auth/login', {
-      method: 'POST',
-      body: { username: $('login-username').value.trim(), password: $('login-password').value },
-    })
-      .then(function (data) {
-        login(data.user, data.token);
-      })
-      .catch(function (err) {
-        if (err.message !== 'No autorizado') showError($('login-error'), err.message);
-      })
-      .finally(function () {
-        btn.disabled = false;
-        btn.textContent = 'Entrar';
-      });
-  });
-
-  $('force-password-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var current = $('force-current').value;
-    var next = $('force-new').value;
-    var confirm = $('force-confirm').value;
-    if (next !== confirm) {
-      showError($('force-password-error'), 'La contraseña nueva no coincide con la confirmación.');
-      return;
-    }
-    showError($('force-password-error'), null);
-    api('/api/auth/change-password', { method: 'POST', body: { currentPassword: current, newPassword: next } })
-      .then(function (data) {
-        user = data.user;
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
-        showView('app');
-        loadData();
-      })
-      .catch(function (err) {
-        if (err.message !== 'No autorizado') showError($('force-password-error'), err.message);
-      });
+  // Menú: Pedidos / Agregar pedido / Reparto.
+  document.querySelectorAll('.menu-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      showSection(btn.dataset.view);
+    });
   });
 
   $('logout-btn').addEventListener('click', function () {
@@ -337,6 +322,7 @@
       .then(function () {
         $('add-form').reset();
         $('add-preview').hidden = true;
+        showSection('pedidos');
         loadData();
       })
       .catch(function (err) {
@@ -365,42 +351,14 @@
       });
   });
 
-  $('change-password-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var next = $('change-new').value;
-    var confirm = $('change-confirm').value;
-    if (next !== confirm) {
-      showError($('change-password-error'), 'La contraseña nueva no coincide con la confirmación.');
-      return;
-    }
-    showError($('change-password-error'), null);
-    $('change-password-ok').hidden = true;
-    api('/api/auth/change-password', {
-      method: 'POST',
-      body: { currentPassword: $('change-current').value, newPassword: next },
-    })
-      .then(function (data) {
-        user = data.user;
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
-        $('change-password-form').reset();
-        $('change-password-ok').hidden = false;
-      })
-      .catch(function (err) {
-        if (err.message !== 'No autorizado') showError($('change-password-error'), err.message);
-      });
-  });
-
   // ---------- Inicio ----------
   if (!API) {
     showError($('login-error'), 'Falta configurar la URL de la API en config.js.');
     showView('login');
   } else if (token && user) {
-    if (user.mustChangePassword) {
-      showView('force-password');
-    } else {
-      showView('app');
-      loadData();
-    }
+    showView('app');
+    showSection('pedidos');
+    loadData();
   } else {
     showView('login');
   }

@@ -123,6 +123,41 @@ input:focus, select:focus {
 .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 7px 12px; font-size: 0.9rem; }
 .btn-danger:hover { background: #fef2f2; }
 
+.user-picker { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.user-picker .btn-block { margin-top: 0; }
+.user-picker .btn .muted { color: rgba(255,255,255,0.85); }
+
+.menu-bar {
+  display: flex;
+  gap: 8px;
+  position: sticky;
+  top: 57px;
+  z-index: 5;
+  background: var(--bg);
+  padding: 4px 0;
+}
+
+.menu-btn {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--card);
+  color: var(--text);
+}
+
+.menu-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.app-view { display: flex; flex-direction: column; gap: 16px; }
+.app-view[hidden] { display: none; }
+
 .summary { display: flex; flex-direction: column; gap: 16px; }
 
 .mine {
