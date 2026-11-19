@@ -151,14 +151,20 @@
   function renderSummary(s) {
     $('summary-count').textContent = s.count;
     $('summary-total').textContent = money(s.total);
-    $('summary-daniel').textContent = money(s.danielTotal);
+    if (user && user.role === 'dueno') {
+      // Para Rosario y Luis, "Lo mío" es lo que ganó su propia moto.
+      $('summary-daniel').textContent = money(s.perOwner[user.username] || 0);
+      $('summary-daniel-pct').textContent = 'Tu parte por tu moto';
+    } else {
+      $('summary-daniel').textContent = money(s.danielTotal);
+      $('summary-daniel-pct').textContent = s.percents.danielPct + '% de lo ganado';
+    }
     $('summary-owner').textContent = money(s.ownerTotal);
     $('summary-rosario').textContent = money(s.perOwner.rosario);
     $('summary-luis').textContent = money(s.perOwner.luis);
     $('summary-gas').textContent = money(s.gasTotal);
     $('summary-owner-pct').textContent = s.percents.ownerPct;
     $('summary-gas-pct').textContent = s.percents.gasPct;
-    $('summary-daniel-pct').textContent = s.percents.danielPct + '% de lo ganado';
     percents = s.percents;
   }
 
