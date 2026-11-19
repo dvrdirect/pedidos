@@ -1,0 +1,181 @@
+/* Pedidos — estilos móviles primero */
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --text: #1c1a17;
+  --muted: #6f6a61;
+  --accent: #0f766e;
+  --accent-dark: #0b5e57;
+  --danger: #b91c1c;
+  --ok: #15803d;
+  --border: #e5e0d8;
+  --radius: 14px;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.topbar {
+  background: var(--accent);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar h1 { margin: 0; font-size: 1.25rem; }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-label { font-size: 0.9rem; opacity: 0.95; }
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.card h2 { margin: 0 0 8px; font-size: 1.1rem; }
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+.error { color: var(--danger); font-size: 0.9rem; }
+.ok { color: var(--ok); font-size: 0.9rem; }
+
+label {
+  display: block;
+  margin: 12px 0 4px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 11px 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+}
+
+input:focus, select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.password-field { display: flex; gap: 8px; }
+.password-field input { flex: 1; }
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn:hover { background: var(--accent-dark); }
+.btn-block { width: 100%; margin-top: 16px; }
+.btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.6); padding: 7px 12px; font-size: 0.9rem; }
+.btn-small { flex-shrink: 0; padding: 0 12px; color: var(--accent); border-color: var(--border); }
+.btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 7px 12px; font-size: 0.9rem; }
+.btn-danger:hover { background: #fef2f2; }
+
+.summary { display: flex; flex-direction: column; gap: 16px; }
+
+.mine {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.mine .label { color: rgba(255,255,255,0.85); }
+.mine .big { display: block; font-size: 2.4rem; font-weight: 800; line-height: 1.2; }
+.mine .muted { color: rgba(255,255,255,0.85); }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat .value { display: block; font-size: 1.25rem; font-weight: 700; margin-top: 2px; }
+.stat .muted { display: block; margin-top: 4px; font-size: 0.85rem; }
+
+.orders { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
+.order {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.order-amount { font-size: 1.15rem; font-weight: 800; }
+.order-date { font-size: 0.85rem; color: var(--muted); }
+.order-note { margin: 4px 0 0; }
+.order-split { margin: 8px 0 0; font-size: 0.9rem; color: var(--muted); }
+.order-split strong { color: var(--text); }
+
+.order-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+.order-edit { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.order-edit .row { display: flex; gap: 8px; }
+.order-edit .row > * { flex: 1; }
+
+.preview { margin: 8px 0 0; }
+
+@media (max-width: 420px) {
+  .summary-grid { grid-template-columns: 1fr; }
+  .mine .big { font-size: 2rem; }
+}

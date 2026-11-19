@@ -1,0 +1,34 @@
+# Render Blueprint — API de Pedidos (plan gratuito).
+# En Render: New -> Blueprint -> conecta el repositorio y aplica este archivo.
+services:
+  - type: web
+    name: pedidos-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Origen permitido (CORS): la página de GitHub Pages.
+      - key: CORS_ORIGIN
+        value: https://dvrdirect.github.io
+      # Cadena de conexión de MongoDB Atlas (se pone en el dashboard de Render).
+      - key: MONGODB_URI
+        sync: false
+      # Secreto para firmar los JWT (Render genera uno aleatorio).
+      - key: JWT_SECRET
+        generateValue: true
+      # Clave que protege el endpoint de siembra inicial (Render genera una).
+      - key: SETUP_KEY
+        generateValue: true
+      # Contraseñas temporales de los 3 usuarios (se ponen en el dashboard).
+      # Cada usuario debe cambiar la suya en el primer inicio de sesión.
+      - key: SEED_PASSWORD_ROSARIO
+        sync: false
+      - key: SEED_PASSWORD_LUIS
+        sync: false
+      - key: SEED_PASSWORD_DANIEL
+        sync: false
