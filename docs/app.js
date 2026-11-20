@@ -204,7 +204,7 @@
     $('today-date').textContent = label;
     $('today-daniel').textContent = money(s.danielTotal);
     $('today-rosario').textContent = money(s.perOwner.rosario);
-    $('today-luis').textContent = money(s.perOwner.luis);
+    $('today-moto').textContent = money(s.gasTotal);
     $('today-total').textContent = money(s.total);
     $('today-count').textContent = s.count;
     $('today-empty').hidden = s.count > 0;
