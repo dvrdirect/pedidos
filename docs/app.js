@@ -205,6 +205,10 @@
     $('today-daniel').textContent = money(s.danielTotal);
     $('today-rosario').textContent = money(s.perOwner.rosario);
     $('today-moto').textContent = money(s.gasTotal);
+    var p = s.percents || { danielPct: 70, ownerPct: 20, gasPct: 10 };
+    $('today-daniel-pct').textContent = p.danielPct;
+    $('today-rosario-pct').textContent = p.ownerPct;
+    $('today-moto-pct').textContent = p.gasPct;
     $('today-total').textContent = money(s.total);
     $('today-count').textContent = s.count;
     $('today-empty').hidden = s.count > 0;
