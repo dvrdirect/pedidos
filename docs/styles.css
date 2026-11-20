@@ -179,6 +179,15 @@ input:focus, select:focus {
 .piggy-happy .coin-3 { animation-delay: 0.4s; }
 @keyframes coin-drop { 0% { opacity: 0; transform: translateY(-14px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(26px); } }
 
+/* Ganancias de hoy */
+.today-card h2 { margin-bottom: 2px; }
+.today-card .muted { margin: 0 0 8px; }
+.today-rows { display: flex; flex-direction: column; }
+.today-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--border); }
+.today-row strong { font-size: 1.1rem; }
+.today-foot { margin: 8px 0 0; }
+.today-foot strong { color: var(--text); }
+
 /* Selector de mes */
 .month-row { display: flex; align-items: center; gap: 10px; }
 .month-row label { margin: 0; }

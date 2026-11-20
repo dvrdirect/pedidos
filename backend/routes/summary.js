@@ -2,16 +2,14 @@ const express = require('express');
 const Order = require('../models/Order');
 const Setting = require('../models/Setting');
 const { centsToMoney } = require('../utils/split');
-const { monthFilter } = require('../utils/month');
+const { monthFilter, dayFilter, todayKey } = require('../utils/month');
 
 const router = express.Router();
 
-// GET /api/summary — totales generales y por dueño de la moto.
-// Se suman los repartos guardados en cada pedido, así un cambio de
-// porcentajes no altera lo ya registrado.
-// ?month=YYYY-MM filtra por mes (hora de Ciudad de México).
-router.get('/', async (req, res) => {
-  const match = monthFilter(req.query.month);
+// Totales y reparto sumando los valores guardados en cada pedido, así un
+// cambio de porcentajes no altera lo ya registrado. `match` es un filtro
+// de Mongo sobre createdAt (mes, día o vacío = todo).
+async function computeSummary(match) {
   const pipeline = [];
   if (match.createdAt) pipeline.push({ $match: match });
   pipeline.push({
@@ -52,8 +50,24 @@ router.get('/', async (req, res) => {
   totals.gasTotal = centsToMoney(totals.gasTotal);
   totals.danielTotal = centsToMoney(totals.danielTotal);
 
+  return totals;
+}
+
+// GET /api/summary — totales generales y por dueño de la moto.
+// ?month=YYYY-MM filtra por mes (hora de Ciudad de México).
+router.get('/', async (req, res) => {
+  const totals = await computeSummary(monthFilter(req.query.month));
   const percents = await Setting.getPercents();
   return res.json({ ...totals, percents });
+});
+
+// GET /api/summary/today — totales solo del día de hoy (hora de Ciudad
+// de México). Responde con la misma forma que /api/summary más `date`.
+router.get('/today', async (req, res) => {
+  const date = todayKey();
+  const totals = await computeSummary(dayFilter(date));
+  const percents = await Setting.getPercents();
+  return res.json({ ...totals, percents, date });
 });
 
 module.exports = router;

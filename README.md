@@ -11,6 +11,9 @@ Los porcentajes los puede cambiar Daniel desde la app (es el administrador).
 Si un porcentaje cambia, los pedidos ya registrados conservan su reparto
 original; el cambio aplica solo a los pedidos nuevos.
 
+Debajo de la meta para el bebé, un apartado «Ganancias de hoy» muestra las
+ganancias totales de cada usuario en el día (Daniel, Rosario y Luis).
+
 ## Usuarios
 
 | Usuario | Nombre | Rol |

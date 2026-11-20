@@ -155,6 +155,7 @@
       api('/api/orders?month=' + selectedMonth),
       api('/api/settings'),
       api('/api/summary'),
+      api('/api/summary/today'),
     ])
       .then(function (results) {
         percents = results[2];
@@ -162,6 +163,7 @@
         renderOrders(results[1].orders || []);
         renderSettingsForm();
         renderGoal(results[3]);
+        renderToday(results[4]);
       })
       .catch(function (err) {
         if (err.message === 'No autorizado') return;
@@ -189,6 +191,23 @@
     $('summary-owner-pct').textContent = s.percents.ownerPct;
     $('summary-gas-pct').textContent = s.percents.gasPct;
     percents = s.percents;
+  }
+
+  // ---------- Ganancias de hoy ----------
+  function renderToday(s) {
+    var label = 'Hoy';
+    if (s.date) {
+      var d = new Date(s.date + 'T12:00:00');
+      label = d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      label = label.charAt(0).toUpperCase() + label.slice(1);
+    }
+    $('today-date').textContent = label;
+    $('today-daniel').textContent = money(s.danielTotal);
+    $('today-rosario').textContent = money(s.perOwner.rosario);
+    $('today-luis').textContent = money(s.perOwner.luis);
+    $('today-total').textContent = money(s.total);
+    $('today-count').textContent = s.count;
+    $('today-empty').hidden = s.count > 0;
   }
 
   function renderOrders(orders) {
