@@ -218,6 +218,16 @@ input:focus, select:focus {
 
 .orders { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 
+/* Banner que separa los días en la lista de pedidos */
+.day-banner {
+  background: #d7efec;
+  color: var(--accent-dark);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
 .order {
   border: 1px solid var(--border);
   border-radius: 12px;

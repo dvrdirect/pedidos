@@ -210,19 +210,43 @@
     $('today-empty').hidden = s.count > 0;
   }
 
+  // "YYYY-MM-DD" de una fecha ISO, en hora de Ciudad de México.
+  function dayKey(iso) {
+    var d = new Date(new Date(iso).getTime() - 6 * 60 * 60 * 1000);
+    var y = d.getUTCFullYear();
+    var m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    var day = String(d.getUTCDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+
+  // "Viernes 20 de noviembre de 2026" para una fecha ISO.
+  function dayLabel(iso) {
+    var d = new Date(dayKey(iso) + 'T12:00:00');
+    var label = d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
+
   function renderOrders(orders) {
     var list = $('orders-list');
     list.innerHTML = '';
     $('orders-loading').hidden = true;
     $('orders-empty').hidden = orders.length > 0;
+    var lastDay = null;
     orders.forEach(function (order) {
+      var day = dayKey(order.createdAt);
+      if (day !== lastDay) {
+        lastDay = day;
+        var banner = document.createElement('li');
+        banner.className = 'day-banner';
+        banner.textContent = dayLabel(order.createdAt);
+        list.appendChild(banner);
+      }
       var li = document.createElement('li');
       li.className = 'order';
       li.dataset.id = order.id;
       li.innerHTML =
         '<div class="order-head">' +
           '<span class="order-amount">' + money(order.amount) + '</span>' +
-          '<span class="order-date">' + formatDate(order.createdAt) + '</span>' +
         '</div>' +
         (order.note ? '<p class="order-note">' + escapeHtml(order.note) + '</p>' : '') +
         '<p class="order-split">Moto de <strong>' + escapeHtml(OWNER_NAMES[order.owner] || order.owner) + '</strong> · ' +
