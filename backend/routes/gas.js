@@ -12,6 +12,16 @@ const router = express.Router();
 const REFILL_CENTS = 6500;
 const PER_DAY_CENTS = 3250;
 
+// "YYYY-MM-DD" de una fecha, en hora de Ciudad de México.
+// (monthKey del util solo devuelve "YYYY-MM", no sirve para contar días.)
+function dayKey(date) {
+  const d = new Date(new Date(date).getTime() - 6 * 60 * 60 * 1000);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+
 function serialize(refill) {
   return {
     id: refill._id.toString(),
@@ -30,11 +40,11 @@ router.get('/', async (req, res) => {
     : null;
   const orders = await Order.find({}, 'createdAt').lean();
   const refills = await GasRefill.find({}).sort({ createdAt: -1 }).lean();
-  const inMonth = (d) => !month || monthKey(d).slice(0, 7) === month;
+  const inMonth = (d) => !month || dayKey(d).slice(0, 7) === month;
 
-  const daysAll = new Set(orders.map((o) => monthKey(o.createdAt)));
+  const daysAll = new Set(orders.map((o) => dayKey(o.createdAt)));
   const daysMonth = new Set(
-    orders.filter((o) => inMonth(o.createdAt)).map((o) => monthKey(o.createdAt))
+    orders.filter((o) => inMonth(o.createdAt)).map((o) => dayKey(o.createdAt))
   );
   const accruedCents = daysAll.size * PER_DAY_CENTS;
   const accruedMonthCents = daysMonth.size * PER_DAY_CENTS;
