@@ -14,7 +14,7 @@
   } catch (e) {
     user = null;
   }
-  var percents = { ownerPct: 20, gasPct: 10, danielPct: 70 };
+  var percents = { ownerPct: 20, gasPct: 0, danielPct: 80 };
   var currentSection = 'pedidos';
   var GOAL_TARGET = 50000; // Meta para el bebé, en MXN.
   var LAST_SEEN_KEY = 'pedidos_last_daniel_total';
@@ -156,6 +156,7 @@
       api('/api/settings'),
       api('/api/summary'),
       api('/api/summary/today'),
+      api('/api/gas?month=' + selectedMonth),
     ])
       .then(function (results) {
         percents = results[2];
@@ -164,6 +165,7 @@
         renderSettingsForm();
         renderGoal(results[3]);
         renderToday(results[4]);
+        renderGas(results[5]);
       })
       .catch(function (err) {
         if (err.message === 'No autorizado') return;
@@ -212,6 +214,42 @@
     $('today-total').textContent = money(s.total);
     $('today-count').textContent = s.count;
     $('today-empty').hidden = s.count > 0;
+  }
+
+  // ---------- Apartado gasolina ----------
+  function renderGas(g) {
+    $('gas-balance').textContent = money(g.balance || 0);
+    $('gas-covered').textContent = g.refillsCovered || 0;
+    $('gas-accrued-month').textContent = money(g.accruedMonth || 0);
+    $('gas-refills-month').textContent =
+      money(g.refillsMonth || 0) + ' (' + (g.refillsCountMonth || 0) + ')';
+    $('gas-days-month').textContent = g.deliveryDays || 0;
+    var list = $('gas-refills-list');
+    list.innerHTML = '';
+    var refills = g.refills || [];
+    $('gas-refills-empty').hidden = refills.length > 0;
+    refills.forEach(function (r) {
+      var li = document.createElement('li');
+      li.className = 'order';
+      li.innerHTML =
+        '<div class="order-head">' +
+          '<span class="order-amount">' + money(r.amount) + '</span>' +
+        '</div>' +
+        '<p class="order-split">' + formatDate(r.createdAt) +
+          (r.note ? ' · ' + escapeHtml(r.note) : '') + '</p>' +
+        '<div class="order-actions">' +
+          '<button type="button" class="btn btn-danger btn-delete">Borrar</button>' +
+        '</div>';
+      li.querySelector('.btn-delete').addEventListener('click', function () {
+        if (!window.confirm('¿Borrar este refil de ' + money(r.amount) + '?')) return;
+        api('/api/gas/refill/' + r.id, { method: 'DELETE' })
+          .then(loadData)
+          .catch(function (err) {
+            if (err.message !== 'No autorizado') showError($('gas-error'), err.message);
+          });
+      });
+      list.appendChild(li);
+    });
   }
 
   // "YYYY-MM-DD" de una fecha ISO, en hora de Ciudad de México.
@@ -508,6 +546,23 @@
       })
       .catch(function (err) {
         if (err.message !== 'No autorizado') showError($('settings-error'), err.message);
+      });
+  });
+
+  $('gas-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    showError($('gas-error'), null);
+    $('gas-ok').hidden = true;
+    api('/api/gas/refill', {
+      method: 'POST',
+      body: { amount: Number($('gas-amount').value) },
+    })
+      .then(function () {
+        $('gas-ok').hidden = false;
+        loadData();
+      })
+      .catch(function (err) {
+        if (err.message !== 'No autorizado') showError($('gas-error'), err.message);
       });
   });
 

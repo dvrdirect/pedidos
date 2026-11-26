@@ -3,13 +3,17 @@
 Aplicación web para registrar pedidos de reparto y repartir cada ganancia
 automáticamente:
 
+- **80%** para Daniel (repartidor)
 - **20%** para el dueño o la dueña de la moto usada en ese pedido (Rosario o Luis)
-- **10%** para gasolina y gastos de la moto
-- **70%** para Daniel (repartidor)
 
 Los porcentajes los puede cambiar Daniel desde la app (es el administrador).
 Si un porcentaje cambia, los pedidos ya registrados conservan su reparto
 original; el cambio aplica solo a los pedidos nuevos.
+
+La gasolina sale de la parte de Daniel, con un apartado propio: cada día con
+pedidos aparta **$32.50**, o sea un refil de **$65 cada 2 días** de reparto.
+Desde la tarjeta «Apartado gasolina» se registra cada refil (por defecto
+$65) y se descuenta de lo apartado.
 
 Debajo de la meta para el bebé, un apartado «Ganancias de hoy» muestra las
 ganancias totales de cada usuario en el día (Daniel, Rosario y la moto).

@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const ordersRoutes = require('./routes/orders');
 const summaryRoutes = require('./routes/summary');
 const settingsRoutes = require('./routes/settings');
+const gasRoutes = require('./routes/gas');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/orders', auth, ordersRoutes);
 app.use('/api/summary', auth, summaryRoutes);
 app.use('/api/settings', auth, settingsRoutes);
+app.use('/api/gas', auth, gasRoutes);
 
 app.use((req, res) => res.status(404).json({ error: 'No encontrado' }));
 

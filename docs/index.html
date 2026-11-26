@@ -60,12 +60,34 @@
         <h2>Ganancias de hoy</h2>
         <p class="muted" id="today-date">Hoy</p>
         <div class="today-rows">
-          <div class="today-row"><span>Daniel <span class="muted">· <span id="today-daniel-pct">70</span>%</span></span><strong id="today-daniel">$0.00</strong></div>
+          <div class="today-row"><span>Daniel <span class="muted">· <span id="today-daniel-pct">80</span>%</span></span><strong id="today-daniel">$0.00</strong></div>
           <div class="today-row"><span>Rosario <span class="muted">· <span id="today-rosario-pct">20</span>%</span></span><strong id="today-rosario">$0.00</strong></div>
-          <div class="today-row"><span>Moto <span class="muted">· gasolina y gastos · <span id="today-moto-pct">10</span>%</span></span><strong id="today-moto">$0.00</strong></div>
+          <div class="today-row"><span>Moto <span class="muted">· gasolina y gastos · <span id="today-moto-pct">0</span>%</span></span><strong id="today-moto">$0.00</strong></div>
         </div>
         <p class="muted today-foot">Total del día: <strong id="today-total">$0.00</strong> · <span id="today-count">0</span> pedidos</p>
         <p id="today-empty" class="muted" hidden>Aún no hay pedidos hoy.</p>
+      </div>
+
+      <!-- Apartado gasolina -->
+      <div class="card gas-card">
+        <h2>Apartado gasolina</h2>
+        <p class="muted">Refil de $65 cada 2 días de reparto ($32.50 por día con pedidos). La gasolina sale de la parte de Daniel.</p>
+        <p class="goal-amount"><span id="gas-balance">$0.00</span> <span class="muted">apartados</span></p>
+        <p class="muted">Cubre <strong id="gas-covered">0</strong> refills de $65</p>
+        <div class="today-rows">
+          <div class="today-row"><span>Acumulado este mes</span><strong id="gas-accrued-month">$0.00</strong></div>
+          <div class="today-row"><span>Refills este mes</span><strong id="gas-refills-month">$0.00</strong></div>
+          <div class="today-row"><span>Días con pedidos este mes</span><strong id="gas-days-month">0</strong></div>
+        </div>
+        <form id="gas-form">
+          <label for="gas-amount">Monto del refil (MXN)</label>
+          <input id="gas-amount" type="number" inputmode="decimal" min="1" step="1" value="65" required />
+          <p id="gas-error" class="error" hidden></p>
+          <p id="gas-ok" class="ok" hidden>Refil registrado.</p>
+          <button type="submit" class="btn btn-primary btn-block">Registrar refil</button>
+        </form>
+        <ul id="gas-refills-list" class="orders"></ul>
+        <p id="gas-refills-empty" class="muted" hidden>Aún no hay refills registrados este mes.</p>
       </div>
 
       <!-- Menú -->
@@ -88,7 +110,7 @@
           <div class="card mine">
             <span class="label">Lo mío</span>
             <span id="summary-daniel" class="big">$0.00</span>
-            <span id="summary-daniel-pct" class="muted">70% de lo ganado</span>
+            <span id="summary-daniel-pct" class="muted">80% de lo ganado</span>
           </div>
           <div class="summary-grid">
             <div class="card stat">
@@ -105,7 +127,7 @@
               <span class="muted">Rosario: <span id="summary-rosario">$0.00</span> · Luis: <span id="summary-luis">$0.00</span></span>
             </div>
             <div class="card stat">
-              <span class="label">Gasolina y gastos (<span id="summary-gas-pct">10</span>%)</span>
+              <span class="label">Gasolina y gastos (<span id="summary-gas-pct">0</span>%)</span>
               <span id="summary-gas" class="value">$0.00</span>
             </div>
           </div>
@@ -158,7 +180,7 @@
             <label for="settings-gas">Gasolina y gastos (%)</label>
             <input id="settings-gas" type="number" min="0" max="100" step="1" required />
 
-            <p class="muted">Daniel (repartidor): <strong id="settings-daniel">70%</strong></p>
+            <p class="muted">Daniel (repartidor): <strong id="settings-daniel">80%</strong></p>
             <p id="settings-error" class="error" hidden></p>
             <p id="settings-ok" class="ok" hidden>Reparto actualizado.</p>
             <button type="submit" class="btn btn-primary">Guardar reparto</button>
